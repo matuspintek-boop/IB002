@@ -25,8 +25,9 @@ def is_string_palindrom(string: str) -> bool:
         return False
 
     i = 0
-    while i <= len(string):
-        if string[i] == string[len(string) - i]:
+    while i <= len(string) // 2:
+        if string[i] == string[len(string) - i -1]:
+            i += 1
             continue
         else:
             return False
@@ -65,9 +66,12 @@ def insert(linked_list: LinkedList, value: Any) -> Node:
     """
     node = Node(value)
 
-    tmp = linked_list.first.next
-    while tmp is not None:
-        tmp = tmp.next
+
+    tmp = linked_list.first
+
+    if tmp is not None:
+        while tmp.next is not None:
+            tmp = tmp.next
 
     if linked_list.first is None:
         linked_list.first = node
@@ -82,20 +86,20 @@ def delete_key(linked_list: LinkedList, key: Any) -> bool:
     """Funkce delete_key smaze prvni vyskyt klice (key) v seznamu
     (linked_list). Vrati False pokud klic nebyl nalezen, True jinak.
     """
+    prev: Node | None = None
     node = linked_list.first
 
-    while node.next is not None:
-        node = node.next
-        previous = node
+    while node is not None:
         if node.value == key:
-            break
+            if prev is not None:
+                prev.next = node.next
+            else:
+                linked_list.first = node.next
+            return True
+        prev = node
+        node = node.next
 
-    if node is None:
-        return False
-
-    previous.next = node
-
-    return True
+    return False
 
 
 # TODO: opravit tuto funkci
@@ -109,14 +113,13 @@ def multiply_numbers(bound: int, numbers: list[int]) -> int:
                 ktera se zapocitavaji do vysledku
         numbers pole cisel k pocitani soucinu
     """
-    array = [0 for i in range(bound)]
-    for i in range(len(numbers)):
-        array[numbers[i]] += 1
-    val = 1
-    for i in range(len(array)):
-        for j in range(array[i]):
-            val *= i
-    return val
+    output = 1
+
+    for val in numbers:
+        if 1 <= val <= bound:
+            output *= val
+
+    return output
 
 
 # TODO: opravit tuto funkci
@@ -130,12 +133,12 @@ def has_correct_parentheses(string: str) -> bool:
     for i in range(len(string)):
         if string[i] == '(':
             opened += 1
-        if string[i] == ')':
+        elif string[i] == ')':
             opened -= 1
-        if opened == 0:
-            return True
+        if opened < 0 :
+            return False
 
-    return False
+    return opened == 0
 
 
 # TODO: opravit tuto funkci
@@ -146,7 +149,7 @@ def sequence_sum(sequence: list[int]) -> int:
     a pokud je stejne, tak ho preskoci. Prvni cislo se nezapocita.
     """
     strange_sum = 0
-    for i in range(len(sequence)):
+    for i in range(1, len(sequence)):
         if sequence[i] > sequence[i - 1]:
             strange_sum += sequence[i]
         if sequence[i] < sequence[i - 1]:
@@ -160,17 +163,26 @@ def find_substring(string: str, substring: str) -> int:
     Pokud se podretezec v retezci nachazi, vrati index prvniho vyskytu.
     Jinak vraci -1.
     """
+    if len(substring) == 0:
+        return -1
+
     if len(substring) > len(string):
         return -1
 
-    j = 1
-    i = 1
+    j = 0
+    i = 0
     while i < len(string):
+        if i > 0 and string[i] == substring[0]:
+            temp = find_substring(string[i:], substring)
+            if temp > -1:
+                return i + temp
         if string[i] == substring[j]:
-            if j == len(substring) - 1:
-                return i - j
             j += 1
-    i += 1
+            if j == len(substring):
+                return i - len(substring) + 1
+        else:
+            j = 0
+        i += 1
     return -1
 
 

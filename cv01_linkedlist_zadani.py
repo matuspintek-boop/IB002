@@ -36,12 +36,25 @@ def insert(linked_list: LinkedList, value: Any) -> Node:
     """Metoda insert() vlozi na konec seznamu linked_list (za prvek last)
     novy uzel s hodnotou value. Vraci nove vlozeny objekt.
     """
-    pass  # TODO
+    node: Node = Node(value)
+
+    if linked_list.last is None:
+        linked_list.first = node
+        linked_list.last =  node
+    else:
+        linked_list.last.next = node
+        node.prev = linked_list.last
+        linked_list.last = node
+    return node
 
 
 def print_list(linked_list: LinkedList) -> None:
     """Metoda print_list() vypise seznam linked_list."""
-    pass  # TODO
+    current: Node | None = linked_list.first
+
+    while current is not None:
+        print(current.value)
+        current = current.next
 
 
 def search(linked_list: LinkedList, value: Any) -> Node | None:
@@ -49,12 +62,30 @@ def search(linked_list: LinkedList, value: Any) -> Node | None:
     value v seznamu linked_list. Pokud se hodnota v seznamu nenachazi,
     vraci None.
     """
-    pass  # TODO
+    current = linked_list.first
+
+    found: bool = False
+
+    while current is not None and not found:
+        if current.value == value:
+            return current
+        current = current.next
+
+    return current
 
 
 def delete(linked_list: LinkedList, node: Node) -> None:
     """Metoda delete() smaze uzel node v seznamu linked_list."""
-    pass  # TODO
+    if node.prev is not None:
+        node.prev.next = node.next
+    if node.next is not None:
+        node.next.prev = node.prev
+    
+    if node.prev is None:
+        linked_list.first = node.next
+    
+    if node.next is None:
+        linked_list.last = node.prev
 
 
 # Testy implementace

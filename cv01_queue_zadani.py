@@ -33,7 +33,14 @@ def enqueue(queue: Queue, value: Any) -> None:
     """Metoda enqueue vlozi do fronty (queue) novy prvek s hodnotou
     (value).
     """
-    pass  # TODO
+    item: Item = Item(value)
+    
+    if queue.last is not None:
+        queue.last.left = item
+        queue.last = item
+    else:
+        queue.first = item
+        queue.last = item
 
 
 def dequeue(queue: Queue) -> Any | None:
@@ -41,12 +48,21 @@ def dequeue(queue: Queue) -> Any | None:
     Vraci hodnotu (value) odebraneho prvku, pokud je fronta prazdna,
     vraci None
     """
-    pass  # TODO
+
+    output = queue.first
+
+    if output is not None:
+        queue.first = queue.first.left
+    if output == queue.last:
+        queue.last = None
+    
+    if output is not None:
+        return output.value
 
 
 def is_empty(queue: Queue) -> bool:
     """is_empty() vraci True v pripade prazdne fronty, jinak False."""
-    pass  # TODO
+    return queue.first is None and queue.last is None
 
 
 # Testy implementace

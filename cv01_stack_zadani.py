@@ -31,21 +31,27 @@ def push(stack: Stack, value: Any) -> None:
     """Metoda push() vlozi na vrchol zasobniku (stack) novy prvek
     s hodnotou (value).
     """
-    pass  # TODO
+    item: Item = Item(value)
+    item.below = stack.top
+
+    stack.top = item
 
 
 def pop(stack: Stack) -> Any | None:
     """Metoda pop() odebere vrchni prvek zasobniku. Vraci hodnotu
     (value) odebraneho prvku, pokud je zasobnik prazdny vraci None.
     """
-    pass  # TODO
+    if stack.top is not None:
+        output = stack.top.value
+        stack.top = stack.top.below
+        return output
 
 
 def is_empty(stack: Stack) -> bool:
     """Metoda is_empty() vraci True v pripade prazdneho zasobniku,
     jinak False.
     """
-    pass  # TODO
+    return stack.top is None
 
 
 # Testy implementace

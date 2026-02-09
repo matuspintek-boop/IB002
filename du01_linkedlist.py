@@ -75,6 +75,14 @@ class Node:
 # seznamu odstraní uzly tak, aby zůstal pouze každý k. uzel. Číslo k je vždy
 # alespoň 2.
 
+
+def print_values(linked_list: LinkedList) -> None:
+    current = linked_list.first
+
+    while current is not None:
+        print(current.value)
+        current = current.next
+
 def keep_each(linked_list: LinkedList, k: int) -> None:
     """
     vstup: ‹linked_list› – korektní jednosměrně zřetězený seznam
@@ -94,7 +102,28 @@ def keep_each(linked_list: LinkedList, k: int) -> None:
     Pro vstup → 10 → 7 → 1 → 2 → 3 → 4 → 19 a k = 3 bude seznam
     modifikován na → 1 → 4.
     """
-    pass  # TODO
+    counter: int = 1
+    current: Node | None = linked_list.first
+    prev: Node | None = None
+    new_begginning: Node | None = None
+
+    while current is not None:
+        if counter == k:
+            if prev is None:
+                new_begginning = current
+                prev = current
+            else:
+                prev.next = current
+                prev = current
+            counter = 1
+        else:
+            counter += 1
+        current = current.next
+    linked_list.first = new_begginning
+
+    if prev is not None:
+        prev.next = None
+
 
 
 # Část 2.
@@ -123,4 +152,80 @@ def split_by_value(linked_list: LinkedList, value: int) \
     Pro vstup → 1 → 7 → 2 → 5 → 3 → 4 a value = 6 funkce vrátí dvojici
     seznamů → 1 → 2 → 5 → 3 → 4 a → 7.
     """
-    pass  # TODO
+    current: Node | None = linked_list.first
+
+    left = LinkedList()
+    left_current: Node | None = None
+    right = LinkedList()
+    right_current: Node | None = None
+
+    while current is not None:
+
+        if current.value <= value:
+            if left_current is None:
+                left.first = current
+            else:
+                left_current.next = current
+
+            left_current = current
+        elif current.value > value:
+            if right_current is None:
+                right.first = current
+            else:
+                right_current.next = current
+            right_current = current
+
+        current = current.next  
+
+
+    if right_current is not None:
+        right_current.next = None
+    if left_current is not None:
+        left_current.next = None
+
+    return (left, right)
+
+
+
+# tests
+
+# node1 = Node(1)
+# node2 = Node(2)
+# node3 = Node(3)
+# node4 = Node(4)
+# node5 = Node(5)
+
+# node1.next = node2
+# node2.next = node3
+# node3.next = node4
+# node4.next = node5
+
+# linked = LinkedList()
+# linked.first = node1
+
+# keep_each(linked, 1)
+
+# print_values(linked)
+
+# print("---------------")
+
+
+# linked = LinkedList()
+
+# list = [17, -1, 2, 5, -11, 4, 0, 10, 3, 2, 8, -3]
+
+# new_list = [Node(item) for item in list]
+
+# for index, node in enumerate(new_list):
+#     if index < len(new_list) - 1:
+#         node.next = new_list[index+1]
+
+# linked.first = new_list[0]
+
+# print_values(linked)
+
+# a, b = split_by_value(linked, 0)
+# print("left:")
+# print_values(a)
+# print("right:")
+# print_values(b)
