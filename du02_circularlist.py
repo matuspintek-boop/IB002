@@ -173,29 +173,29 @@ def set_jump(start: Node, jump_size: int) -> None:
     return
 
 
-def create_circular_list(data: list[int]) -> Node:
-    nodes: list[Node] = [Node(i) for i in data]
-    for index, node in enumerate(nodes):
-        node.next = nodes[(index+1)%len(nodes)]
+# def create_circular_list(data: list[int]) -> Node:
+#     nodes: list[Node] = [Node(i) for i in data]
+#     for index, node in enumerate(nodes):
+#         node.next = nodes[(index+1)%len(nodes)]
 
-    return nodes[0]
+#     return nodes[0]
 
-def print_nodes(node: Node) -> None:
-    print(node.value)    
-    if node.jump is not None:
-        print(node.jump.value)
-    else:
-        print("No jump")
-    start: Node = node
-    node = node.next
+# def print_nodes(node: Node) -> None:
+#     print(node.value)    
+#     if node.jump is not None:
+#         print(node.jump.value)
+#     else:
+#         print("No jump")
+#     start: Node = node
+#     node = node.next
 
-    while node != start:
-        print(node.value)
-        if node.jump is not None:
-            print(node.jump.value)
-        else:
-            print("No jump")
-        node = node.next
+#     while node != start:
+#         print(node.value)
+#         if node.jump is not None:
+#             print(node.jump.value)
+#         else:
+#             print("No jump")
+#         node = node.next
 
 
 
