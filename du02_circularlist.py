@@ -76,13 +76,33 @@ def reverse(start: Node) -> None:
     Po provedení funkce:    ╭→ 10 → 19 → 4 → 3 → 2 → 1 → 7 ╮
                             ╰──────────────────────────────╯
     """
-    pass  # TODO
+    prev: Node = start
+    current = start.next
+
+    while current != start:
+        current_next = current.next
+        current.next = prev
+        prev = current
+        current = current_next
+
+    current.next = prev
+
+    return
 
 
 # Část 2.
 # V této části použijeme atribut ‹jump›. Implementujte funkci set_jump,
 # která každému uzlu nastaví tento atribut tak, aby se odkazoval na uzel
 # v zadané vzdálenosti od něj.
+def pair_nodes(node1: Node, node2: Node, start: Node) -> None:
+    while node1.next != start:
+        node1.jump = node2
+        node1 = node1.next
+        node2 = node2.next
+
+    node1.jump = node2
+
+
 def set_jump(start: Node, jump_size: int) -> None:
     """
     vstup: ‹start›     – odkaz na uzel kruhového zřetězeného seznamu
@@ -128,4 +148,72 @@ def set_jump(start: Node, jump_size: int) -> None:
     atribut ‹jump› uzlu s hodnotou 4 se bude odkazovat na uzel s hodnotou 10
     atribut ‹jump› uzlu s hodnotou 19 se bude odkazovat na uzel s hodnotou 7
     """
-    pass  # TODO
+    backup_start = start
+
+    length = 1
+
+    current = start.next
+    while current != start:
+        length += 1
+        current = current.next
+
+    jump_size %= length
+
+    if jump_size == 0:
+        return
+    
+    sibling = start
+
+    while jump_size > 0:
+        sibling = sibling.next
+        jump_size -= 1
+
+    pair_nodes(start, sibling, start)
+
+    return
+
+
+def create_circular_list(data: list[int]) -> Node:
+    nodes: list[Node] = [Node(i) for i in data]
+    for index, node in enumerate(nodes):
+        node.next = nodes[(index+1)%len(nodes)]
+
+    return nodes[0]
+
+def print_nodes(node: Node) -> None:
+    print(node.value)    
+    if node.jump is not None:
+        print(node.jump.value)
+    else:
+        print("No jump")
+    start: Node = node
+    node = node.next
+
+    while node != start:
+        print(node.value)
+        if node.jump is not None:
+            print(node.jump.value)
+        else:
+            print("No jump")
+        node = node.next
+
+
+
+# def test_circular_list() -> None:
+
+#     nodes = create_circular_list([1,2,3,4,5])
+#     reverse(nodes)
+#     print_nodes(nodes)
+
+
+# def test_set_jump() -> None:
+#     nodes = create_circular_list([10,7,1,2,3,4,19])
+#     set_jump(nodes, 100)
+#     print_nodes(nodes)
+
+
+
+# if __name__ == "__main__":
+#     test_circular_list()
+#     print("-------------")
+#     test_set_jump()
