@@ -49,6 +49,20 @@ def partition(numbers: list[int], key: int) -> tuple[int, int]:
 # Část 2.
 # Implementujte funkci minimum, která najde minimální hodnotu v poli
 # různých čísel s jediným lokálním minimem.
+
+def min_recursive(left_index: int, right_index: int, numbers: list[int]) -> int:
+    if right_index - left_index <= 1:
+        return min(numbers[left_index], numbers[right_index])
+    mid = left_index + (right_index - left_index) // 2
+
+    val = numbers[mid]
+
+    if numbers[mid - 1] < val:
+        return min_recursive(left_index, mid - 1, numbers)
+    elif numbers[mid+1] < val:
+        return min_recursive(mid+1, right_index, numbers)
+    return val
+    
 def minimum(numbers: list[int]) -> int:
     """
     vstup: ‹numbers› – pole vzájemně různých čísel, které obsahuje
@@ -63,4 +77,16 @@ def minimum(numbers: list[int]) -> int:
     Pro vstup [10, 8, 6, 4, 2, 1, 3, 5, 7, 9] funkce vrátí číslo 1.
     Pro vstup [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] funkce vrátí číslo 0.
     """
-    pass  # TODO
+
+    return min_recursive(0, len(numbers) - 1, numbers)
+
+def test_minimum():
+    assert minimum([0]) == 0
+    assert minimum([10, 8, 6, 4, 2, 1, 3, 5, 7, 9]) == 1
+    assert minimum([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]) == 0
+    assert minimum([9, 8, 7, 6, 5]) == 5
+
+    print("minimum passed ALL TESTS")
+
+if __name__ == "__main__":
+    test_minimum()
