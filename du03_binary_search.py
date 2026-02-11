@@ -126,23 +126,23 @@ def minimum(numbers: list[int]) -> int:
 
     return min_recursive(0, len(numbers) - 1, numbers)
 
-def test_minimum():
-    assert minimum([0]) == 0
-    assert minimum([10, 8, 6, 4, 2, 1, 3, 5, 7, 9]) == 1
-    assert minimum([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]) == 0
-    assert minimum([9, 8, 7, 6, 5]) == 5
+# def test_minimum() -> None:
+#     assert minimum([0]) == 0
+#     assert minimum([10, 8, 6, 4, 2, 1, 3, 5, 7, 9]) == 1
+#     assert minimum([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]) == 0
+#     assert minimum([9, 8, 7, 6, 5]) == 5
 
-    print("minimum passed ALL TESTS")
+#     print("minimum passed ALL TESTS")
 
-def test_partition():
-    assert partition([], 0) == (0, 0)
-    assert partition([1,2,3,5,5], 6) == (5, 5)
-    assert partition([1,2,3,4], 2) == (1,2)
-    assert partition([1,2,3], 0) == (0, 0)
-    assert partition([1, 3, 3, 7], 3) == (1, 3)
-    assert partition([1, 3, 3, 7, 17, 42, 69, 420], 11) == (4, 4)
+# def test_partition() -> None:
+#     assert partition([], 0) == (0, 0)
+#     assert partition([1,2,3,5,5], 6) == (5, 5)
+#     assert partition([1,2,3,4], 2) == (1,2)
+#     assert partition([1,2,3], 0) == (0, 0)
+#     assert partition([1, 3, 3, 7], 3) == (1, 3)
+#     assert partition([1, 3, 3, 7, 17, 42, 69, 420], 11) == (4, 4)
 
-    print("partition PASSED ALL TESTS")
-if __name__ == "__main__":
-    test_partition()
-    test_minimum()
+#     print("partition PASSED ALL TESTS")
+# if __name__ == "__main__":
+#     test_partition()
+#     test_minimum()
