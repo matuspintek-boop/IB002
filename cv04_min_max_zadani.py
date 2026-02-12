@@ -23,8 +23,27 @@ def binary_search_recursive(
     Funkce vraci index nalezeneho prvku, pokud prvek v posloupnosti
     neni, vraci -1.
     """
-    return -1
-    # TODO
+
+    if len(array) == 0:
+        return -1
+
+    if right - left <= 1:
+        if array[left] == key:
+            return left
+        if array[right] == key:
+            return right
+        return -1
+    
+    mid = left + (right - left) // 2
+    val = array[mid]
+    if val == key:
+        return mid
+    if val > key:
+        return binary_search_recursive(array, left, mid-1, key)
+    if val < key:
+        return binary_search_recursive(array, mid+1, right, key)
+    
+    assert False
 
 
 def binary_search_iterative(
@@ -33,8 +52,22 @@ def binary_search_iterative(
     """Iterativni verze predesle funkce.
     Iterativni podobu napiste podle intuice.
     """
+    while right - left > 1:
+        mid = left + (right - left) // 2
+
+        val = array[mid]
+        if val == key:
+            return mid
+        elif val > key:
+            right = mid - 1
+        elif val < key:
+            left = mid + 1
+
+    if array[left] == key:
+        return left
+    if array[right] == key:
+        return right
     return -1
-    # TODO
 
 
 def min_max_search_recursive(
@@ -44,8 +77,18 @@ def min_max_search_recursive(
     rozdeluj a panuj algoritmu.
     V poli se hleda v rozsahu od indexu 'left' do indexu 'right'.
     """
-    # TODO
-    return -1, -1   # ukazka vraceni usporadane dvojice, aby prosel test 20
+    if len(array) == 0:
+        return (-1, -1)
+    
+    if right - left <= 1:
+        return (min(array[left], array[right]), max(array[left], array[right]))
+    
+    else:
+        mid = left + (right - left) // 2
+        min1, max1 = min_max_search_recursive(array, left, mid)
+        min2, max2 = min_max_search_recursive(array, mid+1, right)
+        return (min(min1, min2), max(max1, max2))
+    
 
 
 def min_max_search_iterative(
@@ -58,8 +101,17 @@ def min_max_search_iterative(
     Navodem by vam mohlo byt:
     http://www.codeproject.com/Articles/418776/How-to-replace-recursive-functions-using-stack-and
     """
-    # TODO
-    return -1, -1
+    if len(array) == 0:
+        return (-1, -1)
+    minimum = array[0]
+    maximum = array[0]
+
+    for i in range(1, len(array)):
+        maximum = max(maximum, array[i])
+        minimum = min(minimum, array[i])
+
+    return (minimum, maximum)
+
 
 
 def fractal_recursive(num: int) -> None:
@@ -84,7 +136,17 @@ def fractal_iterative(num: int) -> None:
     - pop se provede seznam.pop() a vrati odebrany prvek
     - jako test neprazdnosti staci pouze seznam (tj. if seznam, while seznam)
     """
-    pass  # TODO
+    stack: list[tuple[int, int]] = [(num, 3)]
+
+    while len(stack) > 0:
+        current, count = stack.pop()
+        if current == 0:
+            print(current, end=" ")
+            continue
+        print(current, end=" ")
+        if count > 1:
+            stack.append((current, count - 1))
+            stack.append((current - 1, 3))
 
 
 # Nize nasleduji testy.
