@@ -58,7 +58,20 @@
 # Nezapomeňte, že si můžete definovat pomocné funkce. V tomto úkolu je
 # to určitě velmi vhodné.
 
-
+def ternary_sum_rec(current_num: int, current_len: int, current_total: int,
+                    length: int, total: int, data: list[int]) -> None:
+    # for safety, early exit
+    if current_total > total:
+        return
+    
+    if length - current_len == 0 and total - current_total == 0:
+        data.append(current_num)
+    elif length - current_len == 0 and total - current_total > 0:
+        return
+    elif 2*(length - current_len) < total - current_total:
+        return
+    for i in range(min(2, total - current_total)+1):
+        ternary_sum_rec(current_num*3 + i, current_len+1, current_total+i, length, total, data)
 def ternary_sum(length: int, total: int) -> list[int]:
     """
     vstup: ‹length› – kladné celé číslo
@@ -69,4 +82,25 @@ def ternary_sum(length: int, total: int) -> list[int]:
     časová složitost: O(T(length, total) · length),
         kde T(length, total) je hodnota z tabulky naznačené výše
     """
-    pass  # TODO
+    data: list[int] = []
+
+    if length == 0:
+        return data
+
+    ternary_sum_rec(1, 1, 1, length, total, data)
+    ternary_sum_rec(2, 1, 2, length, total, data)
+
+    return data
+
+
+# def test_ternary_sum() -> None:
+#     assert len(ternary_sum(1,1)) == 1
+#     assert len(ternary_sum(1,2)) == 1
+#     assert len(ternary_sum(1,3)) == 0
+#     assert len(ternary_sum(0, 0)) == 0
+#     assert len(ternary_sum(4,5)) == 13
+#     assert len(ternary_sum(5, 5)) == 35
+#     assert len(ternary_sum(5, 11)) == 0
+
+# if __name__ == "__main__":
+#     test_ternary_sum()
