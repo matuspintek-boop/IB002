@@ -24,8 +24,15 @@ def insert_sort(array: list[int]) -> None:
     v poli 'array' tak dlouho, dokud nenarazi na mensi prvek, nebo na zacatek.
     Velikost vstupniho pole ziskate pomoci 'len(array)'.
     """
-    # TODO
-    pass
+    for i in range(0, len(array)):
+        smaller_found = False
+        current = i
+        while not smaller_found:
+            if current == 0 or array[current] > array[current - 1]:
+                smaller_found = True
+            else:
+                swap(array, current, current - 1)
+                current -= 1 
 
 
 # TODO: dopsat tuto funkci
@@ -47,8 +54,21 @@ def merge(
     a od 'mid'+1 po 'right'. K spojeni pouzijte pomocne pole 'aux'.
     Vysledek ulozte v poli 'array'.
     """
-    # TODO
-    pass
+    left_index = left
+    right_index = mid+1
+    aux_index = left
+    while left_index <= mid or right_index <= right:
+        if left_index > mid or right_index <= right and array[right_index] <= array[left_index]:
+            aux[aux_index] = array[right_index]
+            right_index += 1
+        else:
+            aux[aux_index] = array[left_index]
+            left_index += 1
+        aux_index += 1
+
+    for i in range(left, right+1):
+        array[i] = aux[i]
+        
 
 
 # TODO: dopsat tuto funkci
@@ -60,8 +80,12 @@ def merge_sort(
     Pouzijte pomocnou funkci 'merge' a pomocne pole 'aux'. Vysledek
     ulozte v poli 'array'.
     """
-    # TODO
-    pass
+    if right == left:
+        return array
+    mid = left + (right - left) // 2
+    merge_sort(array, aux, left, mid)
+    merge_sort(array, aux, mid+1, right)
+    merge(array, aux.copy(), left, mid, right)
 
 
 # TODO: dopsat tuto funkci
@@ -71,8 +95,17 @@ def counting_sort(array: list[int], low: int, high: int) -> None:
     od 'low' po 'high' (vcetne okraju intervalu).
     Modifikujte primo zadane pole, stejne jako v ostatnich algoritmech.
     """
-    # TODO
-    pass
+    aux =  [0 for i in range(high-low+1)]
+    for item in array:
+        aux[item-low] += 1
+
+    array_index = 0
+    for index, pointer in enumerate(aux):
+        if pointer > 0:
+            for i in range(pointer):
+                array[array_index] = index+low
+                array_index += 1
+
 
 
 # Nasledujici radici algoritmy nejsou povinne, presto je doporucujeme
