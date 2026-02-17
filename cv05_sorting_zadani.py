@@ -41,8 +41,25 @@ def quick_sort_in_place(array: list[int], i: int, j: int) -> None:
     indexu 'i' a 'j' rekurzivne seradte bez pouziti pomocneho pole.
     Jako pivot se voli posledni prvek zadaneho rozsahu.
     """
-    # TODO
-    pass
+    if i == j:
+        return
+    pivot = i
+    swap(array, i, j)
+
+    for index in range(i+1, j+1):
+        if array[index] < array[pivot]:
+            swap(array, index, pivot)
+            swap(array, pivot+1, index)
+            pivot += 1
+        else:
+            continue
+    if pivot > i:
+        quick_sort_in_place(array, i, pivot-1)
+    if pivot < j:
+        quick_sort_in_place(array, pivot+1, j)
+
+
+
 
 
 # TODO: dopsat tuto funkci
