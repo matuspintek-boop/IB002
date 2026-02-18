@@ -27,6 +27,8 @@ def parent_index(i: int) -> int | None:
     """
     if i > 0:
         return (i-1) // 2
+    
+    return None
 
 
 def left_index(i: int) -> int:
@@ -46,6 +48,8 @@ def parent(heap: MinHeap, i: int) -> Any | None:
     index = parent_index(i)
     if index is not None:
         return heap.array[index]
+    
+    return None
 
 
 def left(heap: MinHeap, i: int) -> Any | None:
@@ -55,7 +59,8 @@ def left(heap: MinHeap, i: int) -> Any | None:
     index = left_index(i)
     if index < len(heap.array):
         return heap.array[index]
-
+    
+    return None
 
 def right(heap: MinHeap, i: int) -> Any | None:
     """Vrati praveho potomka prvku na pozici 'i' v halde 'heap'.
@@ -64,6 +69,8 @@ def right(heap: MinHeap, i: int) -> Any | None:
     index = right_index(i)
     if index < len(heap.array):
         return heap.array[index]
+    
+    return None
 
 
 def swap(heap: MinHeap, i: int, j: int) -> None:
@@ -98,14 +105,15 @@ def heapify(heap: MinHeap, i: int) -> None:
         swap(heap, i, smallest)
         heapify(heap, smallest)
 
-
 def build_heap(array: list[Any]) -> MinHeap:
     """Vytvori korektni minimovou haldu z pole 'array'.
     Pro zjednoduseni smite modifikovat existujici pole 'array'.
     """
     heap = MinHeap()
     heap.size = len(array)
-    heap.array = sorted(array)
+    heap.array = array
+    for i in range(heap.size // 2 - 1, -1, -1):
+        heapify(heap, i)
     return heap
 
 
@@ -115,33 +123,49 @@ def decrease_key(heap: MinHeap, i: int, value: Any) -> None:
     """
     if value < heap.array[i]:
         heap.array[i] = value
-        heapify(heap, i)
-heap = MinHeap()
-heap.array = [2, 1, 3]
-heap.size = 2
-heapify(heap, 0)
-print(heap.array)
+
+    parent_ind = parent_index(i)
+    while i > 0 and parent_ind is not None and heap.array[i] < heap.array[parent_ind]:
+        swap(heap, i, parent_ind)
+        i = parent_ind
+        parent_ind = parent_index(i)
+
 
 def insert(heap: MinHeap, value: Any) -> None:
     """Vlozi hodnotu 'value' do haldy 'heap'."""
-    # TODO
-    pass
+    heap.array.append(value+1)
+    heap.size += 1
+    decrease_key(heap, heap.size - 1, value)
 
 
 def extract_min(heap: MinHeap) -> Any | None:
     """Odstrani minimalni prvek haldy 'heap'. Vraci hodnotu odstraneneho
     prvku. Pokud je halda prazdna, vraci None.
     """
-    # TODO
-    return 0
+
+    if heap.size == 0:
+        return None
+    if heap.size == 1:
+        heap.size = 0
+        return heap.array.pop()
+    
+    value = heap.array[0]
+    heap.array[0] = heap.array.pop()
+    heap.size -= 1
+    heapify(heap, 0)
+    return value
 
 
 def heap_sort(array: list[Any]) -> list[Any]:
     """Seradi pole 'array' pomoci haldy od nejvetsiho prvku po nejmensi.
     Vraci serazene pole.
     """
-    # TODO
-    return array
+    heap = build_heap(array)
+    output: list[Any] = []
+    while heap.size > 0:
+        output.append(extract_min(heap))
+    output.reverse()
+    return output
 
 
 # Graphviz funkce.
