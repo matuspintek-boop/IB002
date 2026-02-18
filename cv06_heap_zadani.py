@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#   #!/usr/bin/env python3
 import math
 from typing import Any, TextIO
 
@@ -25,49 +25,52 @@ def parent_index(i: int) -> int | None:
     """Vrati index rodice prvku na pozici 'i'.
     Pokud neexistuje, vrati None.
     """
-    # TODO
-    return 0
+    if i > 0:
+        return (i-1) // 2
 
 
 def left_index(i: int) -> int:
     """Vrati index leveho potomka prvku na pozici 'i'."""
-    # TODO
-    return 0
+    return 2*i+1
 
 
 def right_index(i: int) -> int:
     """Vrati index praveho potomka prvku na pozici 'i'."""
-    # TODO
-    return 0
+    return 2*i+2
 
 
 def parent(heap: MinHeap, i: int) -> Any | None:
     """Vrati rodice prvku na pozici 'i' v halde 'heap'.
     Pokud neexistuje, vrati None.
     """
-    # TODO
-    return None
+    index = parent_index(i)
+    if index is not None:
+        return heap.array[index]
 
 
 def left(heap: MinHeap, i: int) -> Any | None:
     """Vrati leveho potomka prvku na pozici 'i' v halde 'heap'.
     Pokud neexistuje, vrati None.
     """
-    # TODO
-    return None
+    index = left_index(i)
+    if index < len(heap.array):
+        return heap.array[index]
 
 
 def right(heap: MinHeap, i: int) -> Any | None:
     """Vrati praveho potomka prvku na pozici 'i' v halde 'heap'.
     Pokud neexistuje, vrati None.
     """
-    # TODO
-    return None
+    index = right_index(i)
+    if index < len(heap.array):
+        return heap.array[index]
 
 
 def swap(heap: MinHeap, i: int, j: int) -> None:
     """Prohodi prvky na pozicich 'i' a 'j' v halde 'heap'."""
-    pass
+    val = heap.array[i]
+    heap.array[i] = heap.array[j]
+    heap.array[j] = val
 
 
 def heapify(heap: MinHeap, i: int) -> None:
@@ -75,8 +78,25 @@ def heapify(heap: MinHeap, i: int) -> None:
     Kontrola zacina u prvku na pozici 'i'.
     Haldu opravujeme pouze smerem dolu (k listum).
     """
-    # TODO
-    pass
+    # Získáme indexy, ne jen hodnoty
+    l_idx = left_index(i)
+    r_idx = right_index(i)
+    size = len(heap.array)
+    
+    smallest = i  # Předpokládáme, že nejmenší je rodič
+
+    # Je levý potomek menší než rodič?
+    if l_idx < size and heap.array[l_idx] < heap.array[smallest]:
+        smallest = l_idx
+
+    # Je pravý potomek menší než dosavadní nejmenší?
+    if r_idx < size and heap.array[r_idx] < heap.array[smallest]:
+        smallest = r_idx
+
+    # Pokud nejmenší NENÍ rodič, prohodíme a pokračujeme dolů
+    if smallest != i:
+        swap(heap, i, smallest)
+        heapify(heap, smallest)
 
 
 def build_heap(array: list[Any]) -> MinHeap:
@@ -84,7 +104,8 @@ def build_heap(array: list[Any]) -> MinHeap:
     Pro zjednoduseni smite modifikovat existujici pole 'array'.
     """
     heap = MinHeap()
-    # TODO
+    heap.size = len(array)
+    heap.array = sorted(array)
     return heap
 
 
@@ -92,9 +113,14 @@ def decrease_key(heap: MinHeap, i: int, value: Any) -> None:
     """Snizi hodnotu prvku haldy 'heap' na pozici 'i' na hodnotu 'value'
     a opravi vlastnost haldy 'heap'. Pokud by doslo ke zvyseni, neudela nic.
     """
-    # TODO
-    pass
-
+    if value < heap.array[i]:
+        heap.array[i] = value
+        heapify(heap, i)
+heap = MinHeap()
+heap.array = [2, 1, 3]
+heap.size = 2
+heapify(heap, 0)
+print(heap.array)
 
 def insert(heap: MinHeap, value: Any) -> None:
     """Vlozi hodnotu 'value' do haldy 'heap'."""
