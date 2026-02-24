@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#  #!/usr/bin/env python3
 import math
 from typing import Any, TextIO
 
@@ -34,18 +34,58 @@ class BinarySearchTree:
 
 def insert(tree: BinarySearchTree, key: Any) -> None:
     """Vlozi novy uzel s klicem 'key' do stromu 'tree'."""
-    pass
-    # TODO
+    node: Node = Node(key)
+
+    parent = None
+    parent_left = False
+    current = tree.root
+    if current is None:
+        tree.root = node
+        return
+
+    while current is not None:
+        parent = current
+        if key < current.key:
+            parent_left = True
+            current = current.left
+        else:
+            parent_left = False
+            current = current.right
+    node.parent = parent
+    if parent_left:
+        parent.left = node
+    else:
+        parent.right = node
+
+    return None
+
+
+
 
 
 def search(tree: BinarySearchTree, key: Any) -> Node | None:
     """Vyhleda uzel s klicem 'key' ve strome 'tree'. Vrati uzel s hledanym
     klicem. Pokud se klic 'key' ve strome nenachazi, vraci None.
     """
-    pass
-    # TODO
+    current = tree.root
 
+    while current is not None:
+        if current.key == key:
+            return current
+        if key < current.key:
+            current = current.left
+        else:
+            current = current.right
 
+    return None
+
+def maximum(item: Node) -> Node:
+    while item.right is not None:
+        item = item.right
+    return item
+def minimum(item: Node) -> Node:
+    while item.left is not None:
+        
 def delete(tree: BinarySearchTree, node: Node) -> None:
     """Smaze uzel 'node' ze stromu 'tree' a obnovi vlastnost vyhledavaciho
     stromu.
@@ -53,20 +93,38 @@ def delete(tree: BinarySearchTree, node: Node) -> None:
     pass
     # TODO
 
+def height_rec(item: Node | None) -> int:
+    if item is None:
+        return 0
+    else:
+        return max(height_rec(item.left), height_rec(item.right)) + 1
 
 def height(tree: BinarySearchTree) -> int:
     """Vraci vysku stromu 'tree'."""
-    pass
-    # TODO
+    return height_rec(tree.root) - 1
 
+def is_correct(item: Node | None, minimum: Any, maximum: Any) -> bool:
+    if item is None:
+        return True
+    elif minimum is not None and item.key <= minimum \
+        or maximum is not None and item.key >= maximum:
+        return False
+    else:
+        left = False
+        right = False
+        if item.left is None or item.left.key < item.key:
+            left =  is_correct(item.left, minimum, item.key)
+        if item.right is None or item.right.key > item.key:
+            right = is_correct(item.right, item.key, maximum)
+        return left and right
 
-def is_correct_bst(tree: BinarySearchTree) -> bool:
+def is_correct_bst(tree: BinarySearchTree, ) -> bool:
     """Overi, zdali je strom 'tree' korektni binarni vyhledavaci strom.
     Pokud ano, vraci True, jinak False.
     """
-    pass
-    # TODO
+    current = tree.root
 
+    return is_correct(tree.root, None, None)
 
 # Dodatek k graphvizu:
 # Graphviz je nastroj, ktery vam umozni vizualizaci datovych struktur,
