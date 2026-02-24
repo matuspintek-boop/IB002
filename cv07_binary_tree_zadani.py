@@ -79,19 +79,70 @@ def search(tree: BinarySearchTree, key: Any) -> Node | None:
 
     return None
 
-def maximum(item: Node) -> Node:
-    while item.right is not None:
-        item = item.right
-    return item
-def minimum(item: Node) -> Node:
-    while item.left is not None:
-        
+# def maximum(item: Node) -> Node:
+#     while item.right is not None:
+#         item = item.right
+#     return item
+# def minimum(item: Node) -> Node:
+#     while item.left is not None:
+
+
+def is_leaf(node: Node) -> bool:
+    return node.left is None and node.right is None
+
+def has_one_son(node: Node) -> tuple[bool, str]:
+    if node.right is None and node.left is not None:
+        return (True, "left")
+    if node.right is not None and node.left is None:
+        return (True, "right")
+    
+    return (False, "")
+
 def delete(tree: BinarySearchTree, node: Node) -> None:
     """Smaze uzel 'node' ze stromu 'tree' a obnovi vlastnost vyhledavaciho
     stromu.
     """
-    pass
-    # TODO
+    if is_leaf(node):
+        if node == tree.root:
+            tree.root = None
+            return
+        if node == node.parent.right:
+            node.parent.right = None
+        else:
+            node.parent.left = None
+        return
+
+    one_son, side = has_one_son(node)
+
+    if one_son:
+        if side == "left":
+            if node == tree.root:
+                tree.root = node.left
+                node.left.parent = None
+            else:
+                node.left.parent = node.parent
+                if node == node.parent.left:
+                    node.parent.left = node.left
+                else:
+                    node.parent.right = node.left
+        elif side == "right":
+            if node == tree.root:
+                tree.root = node.right
+                node.right.parent = None
+            else:
+                node.right.parent = node.parent
+                if node == node.parent.left:
+                    node.parent.left = node.right
+                else:
+                    node.parent.right = node.right
+        return
+    
+    else:
+        closest: Node = node.right
+        while closest.left is not None:
+            closest = closest.left
+        node.key = closest.key
+        delete(tree, closest)
 
 def height_rec(item: Node | None) -> int:
     if item is None:
