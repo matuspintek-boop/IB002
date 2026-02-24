@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#   #!/usr/bin/env python3
 
 # Povolené knihovny: typing, math
 
@@ -113,13 +113,54 @@ def build_min_tree(leaves: list[int]) -> BinTree:
     Příklad: Pro vstupy [2, 3, 1] a [2, 3, 1, 4, 3, 5] mají odpovídajícími
     výstupy být stromy uvedené výše.
     """
-    pass  # TODO
+    nodes = [Node(key, None, None) for key in leaves]
+
+    while len(nodes) > 1:
+        temp = []
+        for i in range(0, len(nodes), +2):
+            if i < len(nodes) - 1:
+                second_key = nodes[i+1].key
+            else:
+                second_key = nodes[i].key
+
+            min_key = min(nodes[i].key, second_key)
+
+            new_node = Node(min_key, nodes[i], None)
+            if i + 1 < len(nodes):
+                new_node.right = nodes[i+1]
+            temp.append(new_node)
+        nodes = temp
+
+    return BinTree(nodes[0])
 
 
 # Část 2.
 # Implementujte následující tři predikáty, které reprezentují výše uvedené tři
 # podmínky levého minimového stromu. Každý predikát má jako vstupní podmínku
 # platnost předchozích predikátů. Predikáty nemodifikují vstupní stromy.
+def is_leaf(node: Node) -> bool:
+    return node.left is None and node.right is None
+
+def check_leaf_depth_rec(item: Node) -> int:
+    if is_leaf(item):
+        return 1
+    else:
+        if item.right is None:
+            assert item.left is not None
+            depth = check_leaf_depth_rec(item.left)
+            if depth > -1:
+                return depth + 1
+            return -1
+        elif item.left is None:
+            depth = check_leaf_depth_rec(item.right)
+            if depth > -1:
+                return depth + 1
+            return -1
+    depth_l = check_leaf_depth_rec(item.left)
+    depth_r = check_leaf_depth_rec(item.right)
+    if depth_l == depth_r and depth_r > -1:
+        return depth_r + 1
+    return -1
 
 def check_leaf_depth(tree: BinTree) -> bool:
     """
@@ -131,8 +172,27 @@ def check_leaf_depth(tree: BinTree) -> bool:
         (Do extra prostorové složitost nepočítáme velikost vstupu, ale
          počítáme do ní zásobník rekurze.)
     """
-    pass  # TODO
+    if tree.root is None:
+        return True
 
+    return check_leaf_depth_rec(tree.root) > -1
+
+def check_complete_tree(item: Node) -> bool:
+    if item.left is None and item.right is None:
+        return True
+    if item.right is None or item.left is None:
+        return False
+    else:
+        return check_complete_tree(item.left) and check_complete_tree(item.right)
+
+def check_left_align_rec(item: Node) -> bool:
+    if item.left is None and item.right is None:
+        return True
+    elif item.left is not None and item.right is None:
+        return check_left_align_rec(item.left)
+    elif item.right is not None and item.left is not None:
+        return check_complete_tree(item.left) and check_left_align_rec(item.right)
+    return False
 
 def check_left_align(tree: BinTree) -> bool:
     """
@@ -145,8 +205,25 @@ def check_left_align(tree: BinTree) -> bool:
         (Do extra prostorové složitost nepočítáme velikost vstupu, ale
          počítáme do ní zásobník rekurze.)
     """
-    pass  # TODO
+    if tree.root is None:
+        return True
+    return check_left_align_rec(tree.root)
 
+
+def check_min_rec(item: Node) -> bool:
+    if item.left is None and item.right is None:
+        return True
+    elif item.right is None:
+        assert item.left is not None
+        if not check_min_rec(item.left):
+            return False
+        return item.key == item.left.key
+    else:
+        assert item.left is not None
+        if not (check_min_rec(item.left) and check_min_rec(item.right)):
+            return False
+        assert item.left is not None and item.right is not None
+        return item.key == min(item.left.key, item.right.key)
 
 def check_min(tree: BinTree) -> bool:
     """
@@ -162,7 +239,12 @@ def check_min(tree: BinTree) -> bool:
         (Do extra prostorové složitost nepočítáme velikost vstupu, ale
          počítáme do ní zásobník rekurze.)
     """
-    pass  # TODO
+
+    if tree.root is None:
+        return True
+
+    return check_min_rec(tree.root)
+    
 
 
 # Následující funkci můžete použít pro vykreslení stromu při vlastním
@@ -188,3 +270,7 @@ def draw_node(node: Node, file: TextIO) -> None:
         else:
             file.write(f'"{id(node)}" -> "{id(child)}"\n')
             draw_node(child, file)
+
+
+# if __name__ == "__main__":
+#     draw_tree(build_min_tree([2, 3, 1, 4, 3, 5]), "./buildtree.dot")
