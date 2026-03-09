@@ -28,44 +28,50 @@
 # části: část s prvky menšími než zadaný klíč, část s prvky rovnými zadanému
 # klíči a část s prvky většími než zadaný klíč.
 
-def find_first_val(current_index: int, numbers: list[int], val: int) -> int:
-
-    if numbers[current_index] > val:
-        return current_index
-    step = 1
-
-    while numbers[current_index] < val:
-        if current_index + step < len(numbers)\
-            and numbers[current_index+step] < val:
-            current_index += step
-            step *= 2
-        elif (current_index + step >= len(numbers) or numbers[current_index+step] >= val)\
-            and step == 1:
-            return current_index + step
-        else:
-            step = 1
-    assert False
-
-def find_last_val(current_index: int, numbers: list[int], val: int) -> int:
-    step = 1
-
-    if current_index >= len(numbers) or numbers[current_index] > val:
-        return current_index
-
-    while numbers[current_index] == val:
-        if current_index + step < len(numbers)\
-            and numbers[current_index + step] == val:
-            current_index += step
-            step *= 2
-        elif (current_index + step >= len(numbers) or numbers[current_index + step] > val)\
-            and step == 1:
-            return current_index+1
-        else:
-            step = 1
-
-    assert False
-
+def find_first_val(numbers: list[int], val: int) -> int:
+    left_index: int = 0
+    right_index: int = len(numbers) - 1
+    if numbers[left_index] >= val:
+        return left_index
+    
+    if numbers[right_index] < val:
+        return right_index + 1
+    
+    while numbers[left_index] < val:
+        mid = left_index + (right_index - left_index) // 2
+        if mid == left_index:
+            return left_index + 1
         
+        if numbers[mid] < val:
+            left_index = mid
+        else:
+            right_index = mid
+
+    assert False
+
+def find_last_val(left_index: int, numbers: list[int], val: int) -> int:
+    
+    right_index = len(numbers) - 1
+
+
+    if left_index >= len(numbers) or numbers[left_index] > val:
+        return left_index
+
+    if numbers[right_index] == val:
+        return right_index + 1
+
+    while numbers[left_index] == val:
+        mid = left_index + (right_index - left_index) // 2
+        if mid == left_index:
+            return left_index + 1
+        
+        if numbers[mid] == val:
+            left_index = mid
+        
+        else:
+            right_index = mid
+    return left_index + 1
+
 def partition(numbers: list[int], key: int) -> tuple[int, int]:
     """
     vstup: ‹numbers› – seřazené pole celých čísel
@@ -85,7 +91,7 @@ def partition(numbers: list[int], key: int) -> tuple[int, int]:
 
     if len(numbers) == 0:
         return (0, 0)
-    first_index = find_first_val(0, numbers, key) 
+    first_index = find_first_val(numbers, key)
     last_index = find_last_val(first_index, numbers, key)
 
     return (first_index, last_index)
@@ -136,11 +142,15 @@ def minimum(numbers: list[int]) -> int:
 
 # def test_partition() -> None:
 #     assert partition([], 0) == (0, 0)
+#     assert partition([1], 1) == (0, 1)
 #     assert partition([1,2,3,5,5], 6) == (5, 5)
 #     assert partition([1,2,3,4], 2) == (1,2)
 #     assert partition([1,2,3], 0) == (0, 0)
 #     assert partition([1, 3, 3, 7], 3) == (1, 3)
 #     assert partition([1, 3, 3, 7, 17, 42, 69, 420], 11) == (4, 4)
+#     assert partition([1,3,3,7], 1) == (0, 1)
+#     assert partition([-1, 0, 0], 0) == (1,3)
+
 
 #     print("partition PASSED ALL TESTS")
 # if __name__ == "__main__":
